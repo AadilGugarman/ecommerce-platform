@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+body {
+  @apply font-montserrat;
+  font-optical-sizing: auto;
+  background-color: #f0f0f0;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+}
+
+.searchbox input::placeholder {
+  color: red !important;
+}
+.link:hover {
+  color: #f87171 !important;
+}
+.MuiBadge-badge {
+  background-color: #fca5a5 !important;
+}
+.slick-prev:before,
+.slick-next:before {
+  color: black; /* 👈 arrows visible karne ke liye color set */
+  font-size: 30px; /* size thoda bada */
+}
+
+/* Global CSS / index.css */
+.sidebar-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #4f46e5 #e5e7eb; /* thumb | track */
+}
+
+/* Chrome, Edge, Safari */
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 9999px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #4f46e5;
+  border-radius: 9999px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Chrome, Edge, Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* width of vertical scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f0f0f0; /* track color */
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #4f46e5; /* thumb color */
+  border-radius: 4px;
+  border: 2px solid #f0f0f0; /* space around thumb */
+}
+
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}

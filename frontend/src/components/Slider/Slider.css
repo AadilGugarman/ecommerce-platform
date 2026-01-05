@@ -1,0 +1,35 @@
+/* Arrow ke position ko override karo */
+.slick-prev {
+  left: 10px; /* left side se distance */
+  z-index: 2; /* image ke upar laye */
+}
+
+.slick-next {
+  right: 24px; /* right side se distance */
+  z-index: 2;
+}
+
+/* Arrow icon styling */
+.slick-prev:before,
+.slick-next:before {
+  color: white; /* arrow ko white rakho */
+  font-size: 35px; /* thoda bada */
+  opacity: 0.9; /* halka transparent */
+}
+
+
+.slick-dots {
+  position: absolute;
+  bottom: 10px;
+  z-index: 2; 
+}
+
+
+.slick-dots li button:before {
+  font-size: 8px; 
+  color: white; 
+}
+
+.slick-dots li.slick-active button:before {
+  color: red;
+}
