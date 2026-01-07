@@ -18,13 +18,20 @@ const AdminRoutes = () => {
         </ProtectedRoute>
       }
     >
-      <Route index element={<Navigate to="dashboard" replace />} />
+      {/* default */}
+      <Route index element={<Navigate to="/admin/dashboard" replace />} />
+
       <Route path="dashboard" element={<DashboardPage />} />
       <Route path="categories" element={<CategoriesPage />} />
       <Route path="orders" element={<OrdersPage />} />
       <Route path="products" element={<ProductsPage />} />
       <Route path="users" element={<UsersPage />} />
-      <Route path="*" element={<Navigate to="dashboard" replace />} />
+
+      {/* 🔥 FIXED */}
+      <Route
+        path="*"
+        element={<Navigate to="/admin/dashboard" replace />}
+      />
     </Route>
   );
 };

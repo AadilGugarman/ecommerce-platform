@@ -1,9 +1,21 @@
 import React, { useState } from "react";
 import { Notifications, ShoppingCart } from "@mui/icons-material";
 import { Avatar, Badge, Menu, MenuItem } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../features/auth/hooks/useAuth";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+
+  // ✅ ADD ONLY THIS
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    setAnchorEl(null);
+    navigate("/login", { replace: true });
+  };
 
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white shadow-sm">
@@ -29,7 +41,9 @@ const Header = () => {
         >
           <MenuItem>Profile</MenuItem>
           <MenuItem>Settings</MenuItem>
-          <MenuItem>Logout</MenuItem>
+
+          {/* ✅ ONLY THIS LINE CHANGED */}
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
       </div>
     </header>

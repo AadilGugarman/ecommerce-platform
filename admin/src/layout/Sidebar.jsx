@@ -7,9 +7,9 @@ import {
   People,
   ReceiptLong,
   Image,
-  Article,
   Logout,
   ExpandMore,
+  Settings,
 } from "@mui/icons-material";
 
 const sidebarItems = [
@@ -19,9 +19,6 @@ const sidebarItems = [
   { label: "Products", icon: <Inventory2 />, path: "products" },
   { label: "Users", icon: <People />, path: "users" },
   { label: "Orders", icon: <ReceiptLong />, path: "orders" },
-  { label: "Banners", icon: <Image />, path: "banners" },
-  { label: "Blogs", icon: <Article />, path: "blogs" },
-  { label: "Manage Logo", icon: <Image />, path: "logo" },
 ];
 
 const Sidebar = () => {
@@ -29,13 +26,16 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`h-screen bg-slate-900 text-slate-200 transition-all duration-300 ${
+      className={`relative h-screen overflow-hidden bg-slate-900 text-slate-200 transition-all duration-300 ${
         collapsed ? "w-20" : "w-64"
       }`}
     >
+      {/* Header */}
       <div className="flex items-center justify-between px-4 py-5">
         {!collapsed && (
-          <span className="text-xl font-bold text-white">Admin</span>
+          <span className="text-xl font-bold text-white">
+            Admin
+          </span>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -49,6 +49,7 @@ const Sidebar = () => {
         </button>
       </div>
 
+      {/* Main menu */}
       <nav className="mt-4 space-y-1">
         {sidebarItems.map((item) => (
           <NavLink
@@ -65,16 +66,42 @@ const Sidebar = () => {
             }
           >
             {item.icon}
-            {!collapsed && <span className="text-sm">{item.label}</span>}
+            {!collapsed && (
+              <span className="text-sm">{item.label}</span>
+            )}
           </NavLink>
         ))}
-
-        {/* Logout (no route) */}
-        <button className="flex items-center w-full gap-3 px-4 py-3 mt-6 rounded-lg hover:bg-slate-800">
-          <Logout />
-          {!collapsed && <span className="text-sm">Logout</span>}
-        </button>
       </nav>
+
+      {/* Settings at bottom */}
+      <div className="absolute left-0 right-0 bottom-14">
+        <NavLink
+          to="settings"
+          className={({ isActive }) =>
+            `flex items-center w-full px-4 py-3 gap-3 rounded-lg transition
+            ${
+              isActive
+                ? "bg-indigo-600 text-white"
+                : "hover:bg-slate-800"
+            }`
+          }
+        >
+          <Settings />
+          {!collapsed && (
+            <span className="text-sm">Settings</span>
+          )}
+        </NavLink>
+      </div>
+
+      {/* Logout */}
+      <div className="absolute left-0 right-0 bottom-2">
+        <button className="flex items-center w-full gap-3 px-4 py-3 rounded-lg hover:bg-slate-800">
+          <Logout />
+          {!collapsed && (
+            <span className="text-sm">Logout</span>
+          )}
+        </button>
+      </div>
     </aside>
   );
 };

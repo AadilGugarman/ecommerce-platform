@@ -1,5 +1,4 @@
 // features/auth/hooks/useAuth.js
-
 import { useEffect, useState } from "react";
 import {
   loginApi,
@@ -12,15 +11,21 @@ const STORAGE_KEY = "auth_data";
 export const useAuth = () => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // ✅ important
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const data = JSON.parse(stored);
-      setUser(data.user);
-      setToken(data.token);
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const data = JSON.parse(stored);
+        setUser(data.user);
+        setToken(data.token);
+      }
+    } catch (e) {
+      localStorage.removeItem(STORAGE_KEY);
+    } finally {
+      setLoading(false); // ✅ auth check complete
     }
   }, []);
 
@@ -34,7 +39,7 @@ export const useAuth = () => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(res));
       return true;
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Login failed");
       return false;
     } finally {
       setLoading(false);
@@ -48,7 +53,7 @@ export const useAuth = () => {
       await registerApi(data);
       return true;
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Register failed");
       return false;
     } finally {
       setLoading(false);

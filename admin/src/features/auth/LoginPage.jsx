@@ -1,7 +1,5 @@
-// features/auth/LoginPage.jsx
-
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import AuthLayout from "./AuthLayout";
 import AuthFormInput from "./components/AuthFormInput";
@@ -13,6 +11,10 @@ const LoginPage = () => {
   const { login, loading, error } = useAuth();
   const navigate = useNavigate();
 
+  // ✅ ADD THIS
+  const location = useLocation();
+  const from = location.state?.from || "/admin";
+
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -20,8 +22,11 @@ const LoginPage = () => {
 
   const handleSubmit = async () => {
     if (!form.email || !form.password) return;
+
     const success = await login(form);
-    if (success) navigate("/dashboard");
+
+    // ✅ CHANGE THIS LINE
+    if (success) navigate(from, { replace: true });
   };
 
   return (
@@ -52,7 +57,7 @@ const LoginPage = () => {
         <AuthErrorMessage message={error} />
 
         <AuthButton loading={loading} onClick={handleSubmit}>
-          Login
+          {loading ? "Logging in..." : "Login"}
         </AuthButton>
       </div>
     </AuthLayout>
