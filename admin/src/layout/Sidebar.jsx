@@ -13,15 +13,15 @@ import {
 } from "@mui/icons-material";
 
 const sidebarItems = [
-  { label: "Dashboard", icon: <Dashboard />, path: "/admin/dashboard" },
-  { label: "Home Slides", icon: <Image />, path: "/admin/home-slides" },
-  { label: "Categories", icon: <Category />, path: "/admin/categories" },
-  { label: "Products", icon: <Inventory2 />, path: "/admin/products" },
-  { label: "Users", icon: <People />, path: "/admin/users" },
-  { label: "Orders", icon: <ReceiptLong />, path: "/admin/orders" },
-  { label: "Banners", icon: <Image />, path: "/admin/banners" },
-  { label: "Blogs", icon: <Article />, path: "/admin/blogs" },
-  { label: "Manage Logo", icon: <Image />, path: "/admin/logo" },
+  { label: "Dashboard", icon: <Dashboard />, path: "dashboard" },
+  { label: "Home Slides", icon: <Image />, path: "home-slides" },
+  { label: "Categories", icon: <Category />, path: "categories" },
+  { label: "Products", icon: <Inventory2 />, path: "products" },
+  { label: "Users", icon: <People />, path: "users" },
+  { label: "Orders", icon: <ReceiptLong />, path: "orders" },
+  { label: "Banners", icon: <Image />, path: "banners" },
+  { label: "Blogs", icon: <Article />, path: "blogs" },
+  { label: "Manage Logo", icon: <Image />, path: "logo" },
 ];
 
 const Sidebar = () => {
@@ -34,7 +34,9 @@ const Sidebar = () => {
       }`}
     >
       <div className="flex items-center justify-between px-4 py-5">
-        {!collapsed && <span className="text-xl font-bold text-white">Admin</span>}
+        {!collapsed && (
+          <span className="text-xl font-bold text-white">Admin</span>
+        )}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="text-slate-400 hover:text-white"
@@ -52,6 +54,7 @@ const Sidebar = () => {
           <NavLink
             key={item.label}
             to={item.path}
+            end
             className={({ isActive }) =>
               `flex items-center w-full px-4 py-3 gap-3 transition rounded-lg
               ${

@@ -1,4 +1,4 @@
-const StatCard = ({ title, value, icon, color }) => (
+const StatsCard = ({ title, value, icon, color }) => (
   <div className={`rounded-xl p-5 shadow-sm bg-gradient-to-br ${color} text-white`}>
     <div className="flex items-center justify-between">
       <div>
@@ -10,4 +10,4 @@ const StatCard = ({ title, value, icon, color }) => (
   </div>
 );
 
-export default StatCard;
+export default StatsCard;
