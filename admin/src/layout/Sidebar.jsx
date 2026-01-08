@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Dashboard,
   Category,
@@ -10,19 +10,38 @@ import {
   Logout,
   ExpandMore,
   Settings,
+  BarChart,
+  Security,
+  ListAlt,
+  Person,
+  LocalOffer,
 } from "@mui/icons-material";
+import { useAuth } from "../features/auth/hooks/useAuth";
 
 const sidebarItems = [
   { label: "Dashboard", icon: <Dashboard />, path: "dashboard" },
-  { label: "Home Slides", icon: <Image />, path: "home-slides" },
-  { label: "Categories", icon: <Category />, path: "categories" },
+  { label: "Profile", icon: <Person />, path: "profile" },
+
   { label: "Products", icon: <Inventory2 />, path: "products" },
-  { label: "Users", icon: <People />, path: "users" },
+  { label: "Categories", icon: <Category />, path: "categories" },
   { label: "Orders", icon: <ReceiptLong />, path: "orders" },
+  { label: "Users", icon: <People />, path: "users" },
+
+  { label: "Reports", icon: <BarChart />, path: "reports" },
+  { label: "Roles & Permissions", icon: <Security />, path: "roles" },
+  { label: "Activity Logs", icon: <ListAlt />, path: "activity-logs" },
+  { label: "Coupons", icon: <LocalOffer />, path: "coupons" },
 ];
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login", { replace: true });
+  };
 
   return (
     <aside
@@ -33,9 +52,7 @@ const Sidebar = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-5">
         {!collapsed && (
-          <span className="text-xl font-bold text-white">
-            Admin
-          </span>
+          <span className="text-xl font-bold text-white">Admin</span>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -49,7 +66,7 @@ const Sidebar = () => {
         </button>
       </div>
 
-      {/* Main menu */}
+      {/* Menu */}
       <nav className="mt-4 space-y-1">
         {sidebarItems.map((item) => (
           <NavLink
@@ -66,40 +83,33 @@ const Sidebar = () => {
             }
           >
             {item.icon}
-            {!collapsed && (
-              <span className="text-sm">{item.label}</span>
-            )}
+            {!collapsed && <span className="text-sm">{item.label}</span>}
           </NavLink>
         ))}
       </nav>
 
-      {/* Settings at bottom */}
+      {/* Settings */}
       <div className="absolute left-0 right-0 bottom-14">
         <NavLink
           to="settings"
           className={({ isActive }) =>
             `flex items-center w-full px-4 py-3 gap-3 rounded-lg transition
-            ${
-              isActive
-                ? "bg-indigo-600 text-white"
-                : "hover:bg-slate-800"
-            }`
+            ${isActive ? "bg-indigo-600 text-white" : "hover:bg-slate-800"}`
           }
         >
           <Settings />
-          {!collapsed && (
-            <span className="text-sm">Settings</span>
-          )}
+          {!collapsed && <span className="text-sm">Settings</span>}
         </NavLink>
       </div>
 
       {/* Logout */}
       <div className="absolute left-0 right-0 bottom-2">
-        <button className="flex items-center w-full gap-3 px-4 py-3 rounded-lg hover:bg-slate-800">
+        <button
+          onClick={handleLogout}
+          className="flex items-center w-full gap-3 px-4 py-3 rounded-lg hover:bg-slate-800"
+        >
           <Logout />
-          {!collapsed && (
-            <span className="text-sm">Logout</span>
-          )}
+          {!collapsed && <span className="text-sm">Logout</span>}
         </button>
       </div>
     </aside>

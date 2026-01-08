@@ -7,7 +7,6 @@ import { useAuth } from "../features/auth/hooks/useAuth";
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  // ✅ ADD ONLY THIS
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -15,6 +14,17 @@ const Header = () => {
     await logout();
     setAnchorEl(null);
     navigate("/login", { replace: true });
+  };
+
+  // ✅ ADD THESE TWO HANDLERS
+  const goToProfile = () => {
+    setAnchorEl(null);
+    navigate("/admin/profile");
+  };
+
+  const goToSettings = () => {
+    setAnchorEl(null);
+    navigate("/admin/settings");
   };
 
   return (
@@ -39,10 +49,10 @@ const Header = () => {
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
-          <MenuItem>Profile</MenuItem>
-          <MenuItem>Settings</MenuItem>
+          {/* ✅ NOW WORKING */}
+          <MenuItem onClick={goToProfile}>Profile</MenuItem>
+          <MenuItem onClick={goToSettings}>Settings</MenuItem>
 
-          {/* ✅ ONLY THIS LINE CHANGED */}
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
       </div>

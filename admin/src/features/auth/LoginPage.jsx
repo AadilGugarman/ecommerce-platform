@@ -10,9 +10,8 @@ import { useAuth } from "./hooks/useAuth";
 const LoginPage = () => {
   const { login, loading, error } = useAuth();
   const navigate = useNavigate();
-
-  // ✅ ADD THIS
   const location = useLocation();
+
   const from = location.state?.from || "/admin";
 
   const [form, setForm] = useState({
@@ -20,22 +19,27 @@ const LoginPage = () => {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmit = async () => {
     if (!form.email || !form.password) return;
 
     const success = await login(form);
-
-    // ✅ CHANGE THIS LINE
     if (success) navigate(from, { replace: true });
   };
 
   return (
     <AuthLayout>
-      <h2 className="mb-4 text-xl font-semibold text-center">
-        Login
+      {/* Heading */}
+      <h2 className="mb-1 text-2xl font-bold text-center">
+        Welcome Back 👋
       </h2>
+      <p className="mb-6 text-sm text-center text-slate-500">
+        Login to continue to admin panel
+      </p>
 
       <div className="space-y-4">
+        {/* Email */}
         <AuthFormInput
           label="Email"
           type="email"
@@ -45,17 +49,40 @@ const LoginPage = () => {
           }
         />
 
+        {/* Password */}
         <AuthFormInput
           label="Password"
-          type="password"
+          type={showPassword ? "text" : "password"}
           value={form.password}
           onChange={(e) =>
             setForm({ ...form, password: e.target.value })
           }
         />
 
+        {/* Extras */}
+        <div className="flex items-center justify-between text-sm">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              onChange={() =>
+                setShowPassword(!showPassword)
+              }
+            />
+            Show password
+          </label>
+
+          <button
+            onClick={() => navigate("/forgot-password")}
+            className="text-indigo-600 hover:underline"
+          >
+            Forgot password?
+          </button>
+        </div>
+
+        {/* Error */}
         <AuthErrorMessage message={error} />
 
+        {/* Button */}
         <AuthButton loading={loading} onClick={handleSubmit}>
           {loading ? "Logging in..." : "Login"}
         </AuthButton>
