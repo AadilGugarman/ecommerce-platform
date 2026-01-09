@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import AuthCardLayout from "../../components/Auth/AuthCardLayout";
 import SocialLogin from "../../components/Auth/SocialLogin";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../components/context/AuthContext";
+
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -22,11 +25,24 @@ const Signup = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-    console.log("Signup Data:", form);
+const { login } = useAuth();
+const navigate = useNavigate();
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  if (!validate()) return;
+
+  const response = {
+    user: {
+      id: 2,
+      name: form.name,
+      email: form.email,
+    },
   };
+
+  login(response.user);
+  navigate("/", { replace: true });
+};
 
   return (
     <AuthCardLayout title="Create Account">

@@ -10,36 +10,43 @@ const Navbar = () => {
 
   const navItems = [
     { name: "Home", path: "/", submenus: [] },
-    { name: "Fashion", path: "/fashion", submenus: ["Men", "Women", "Kids"] },
+    {
+      name: "Fashion",
+      path: "/category/fashion",
+      submenus: ["Men", "Women", "Kids"],
+    },
     {
       name: "Electronics",
-      path: "/electronics",
+      path: "/category/electronics",
       submenus: ["Mobiles", "Laptops", "TV"],
     },
     {
       name: "Beauty",
-      path: "/beauty",
+      path: "/category/beauty",
       submenus: ["Makeup", "Skincare", "Haircare"],
     },
     {
       name: "Jewellery",
-      path: "/jewellery",
+      path: "/category/jewellery",
       submenus: ["Rings", "Necklaces", "Bracelets"],
     },
     {
       name: "Wellness",
-      path: "/wellness",
+      path: "/category/wellness",
       submenus: ["Supplements", "Fitness"],
     },
-    { name: "Bags", path: "/bags", submenus: ["Handbags", "Backpacks"] },
+    {
+      name: "Bags",
+      path: "/category/bags",
+      submenus: ["Handbags", "Backpacks"],
+    },
     {
       name: "Groceries",
-      path: "/groceries",
+      path: "/category/groceries",
       submenus: ["Vegetables", "Snacks", "Beverages"],
     },
   ];
 
-  // nav items to hide on medium and above
   const hiddenOnMedium = ["Groceries", "Bags", "Wellness"];
 
   const toggleMobileMenu = () => {
@@ -64,23 +71,24 @@ const Navbar = () => {
   return (
     <nav className="w-full">
       <div className="mx-auto md:container">
-        <div className="flex items-center md:h-16 ">
+        <div className="flex items-center md:h-16">
           {/* Category Panel */}
           <div className="hidden md:block">
             <CategoryPanel />
           </div>
 
           {/* Desktop Nav */}
-
           <div className="items-center hidden gap-1 md:flex">
             {navItems.map((item, index) => (
               <div
                 key={index}
                 className={`relative group ${
-                  hiddenOnMedium.includes(item.name) ? "md:hidden lg:flex" : ""
+                  hiddenOnMedium.includes(item.name)
+                    ? "md:hidden lg:flex"
+                    : ""
                 }`}
               >
-                {item.submenus && item.submenus.length > 0 ? (
+                {item.submenus.length > 0 ? (
                   <div className="relative">
                     <Link
                       to={item.path}
@@ -93,17 +101,20 @@ const Navbar = () => {
                     </Link>
 
                     <div className="absolute left-0 z-50 hidden w-48 bg-white border shadow-lg group-hover:block">
-                      {item.submenus.map((sub, subIndex) => (
-                        <Link
-                          key={subIndex}
-                          to={`${item.path}/${sub.toLowerCase()}`}
-                          className={`block px-4 py-2 text-sm hover:bg-gray-100 ${isActiveLink(
-                            `${item.path}/${sub.toLowerCase()}`
-                          )}`}
-                        >
-                          {sub}
-                        </Link>
-                      ))}
+                      {item.submenus.map((sub, subIndex) => {
+                        const subPath = `${item.path}/${sub.toLowerCase()}`;
+                        return (
+                          <Link
+                            key={subIndex}
+                            to={subPath}
+                            className={`block px-4 py-2 text-sm hover:bg-gray-100 ${isActiveLink(
+                              subPath
+                            )}`}
+                          >
+                            {sub}
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
                 ) : (
@@ -121,7 +132,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Hamburger */}
-          <div className="relative md:hidden">
+          <div className="relative ml-auto md:hidden">
             <button
               onClick={toggleMobileMenu}
               className="p-2 text-gray-700 hover:text-blue-600"
@@ -133,16 +144,15 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="absolute left-0 z-50 w-full bg-white border-t md:hidden ">
-            <div className="px-4 py-2 space-y-2 ">
+          <div className="absolute left-0 z-50 w-full bg-white border-t md:hidden">
+            <div className="px-4 py-2 space-y-2">
               {navItems.map((item, index) => (
                 <div key={index}>
-                  {item.submenus && item.submenus.length > 0 ? (
+                  {item.submenus.length > 0 ? (
                     <div>
-                      <Link
-                        to={item.path}
+                      <button
                         onClick={() => toggleSubmenu(index)}
-                        className={`flex justify-between items-center w-full px-3 py-3 text-left font-semibold ${isActiveLink(
+                        className={`flex justify-between items-center w-full px-3 py-3 font-semibold ${isActiveLink(
                           item.path
                         )}`}
                       >
@@ -152,22 +162,25 @@ const Navbar = () => {
                         ) : (
                           <FaChevronDown />
                         )}
-                      </Link>
+                      </button>
 
                       {activeSubmenu === index && (
                         <div className="ml-4">
-                          {item.submenus.map((sub, subIndex) => (
-                            <Link
-                              key={subIndex}
-                              to={`${item.path}/${sub.toLowerCase()}`}
-                              onClick={closeMenu}
-                              className={`block px-3 py-2 text-sm ${isActiveLink(
-                                `${item.path}/${sub.toLowerCase()}`
-                              )}`}
-                            >
-                              {sub}
-                            </Link>
-                          ))}
+                          {item.submenus.map((sub, subIndex) => {
+                            const subPath = `${item.path}/${sub.toLowerCase()}`;
+                            return (
+                              <Link
+                                key={subIndex}
+                                to={subPath}
+                                onClick={closeMenu}
+                                className={`block px-3 py-2 text-sm ${isActiveLink(
+                                  subPath
+                                )}`}
+                              >
+                                {sub}
+                              </Link>
+                            );
+                          })}
                         </div>
                       )}
                     </div>

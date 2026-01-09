@@ -1,92 +1,155 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { BsSearchHeart } from "react-icons/bs";
 import { IoClose } from "react-icons/io5";
 import { MdPayment } from "react-icons/md";
 import { GiReturnArrow } from "react-icons/gi";
-import {TbTruckDelivery} from "react-icons/tb";
+import { TbTruckDelivery } from "react-icons/tb";
+import { fetchSearchSuggestions } from "../../services/searchService";
 
 const recentSearches = ["Laptop", "Headphones", "Shoes"];
 
 const Search = () => {
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  /* 🔁 DEBOUNCE SEARCH */
+  useEffect(() => {
+    if (!query.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetchSearchSuggestions(query);
+        setSuggestions(res);
+        setShowDropdown(true);
+      } catch (err) {
+        console.error(err);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const handleSearch = (value) => {
+    if (!value.trim()) return;
+
+    navigate(`/search?q=${encodeURIComponent(value)}`);
+    setQuery("");
+    setSuggestions([]);
+    setShowDropdown(false);
+    setIsOpen(false);
+  };
 
   return (
     <>
-      {/* Desktop Search Bar */}
-      <div className="container flex items-center justify-between w-full bg-gray-50 ">
-        <div className="relative items-center justify-center hidden w-1/2 border border-blue-500 rounded-md md:flex">
-        <input
-          type="text"
-          placeholder="Search for Products..."
-          className="w-full h-10 px-3 text-base rounded-md bg-inherit focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        <Button className="absolute right-0 p-2 rounded-full">
-          <BsSearchHeart className="text-2xl" />
-        </Button>
-        </div>
-         <div className="items-center justify-end hidden w-1/2 text-center gap-7 md:flex">
-         <span className="flex items-center gap-1 font-medium text-blue-600 ">
-              <TbTruckDelivery className="text-xl " />
+      {/* ================= DESKTOP ================= */}
+      <div className="w-full bg-gray-50">
+        <div className="container flex items-center justify-between px-6 py-3 mx-auto">
+
+          {/* SEARCH INPUT */}
+          <div className="relative hidden md:block w-[420px]">
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => setShowDropdown(true)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch(query)}
+              placeholder="Search for products..."
+              className="w-full pl-5 pr-12 border border-gray-300 rounded-full outline-none h-11 focus:ring-2 focus:ring-blue-500"
+            />
+
+            {/* ❤️ CLICKABLE SEARCH ICON */}
+            <button
+              onClick={() => handleSearch(query)}
+              className="absolute text-pink-600 -translate-y-1/2 right-4 top-1/2 hover:text-pink-700"
+            >
+              <BsSearchHeart className="text-xl" />
+            </button>
+
+            {/* AUTOCOMPLETE / RECENT */}
+            {showDropdown && (
+              <div className="absolute z-50 w-full mt-2 bg-white border shadow-lg rounded-xl">
+                {(suggestions.length ? suggestions : recentSearches).map(
+                  (item) => (
+                    <div
+                      key={item}
+                      onClick={() => handleSearch(item)}
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    >
+                      {item}
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT INFO */}
+          <div className="items-center hidden gap-8 pr-4 md:flex">
+            <span className="flex items-center gap-2 text-sm font-medium text-blue-600">
+              <TbTruckDelivery className="text-lg" />
               Free Delivery
             </span>
-            <span className="flex items-center gap-1 font-medium text-green-600">
-              <MdPayment className="text-xl" />
+            <span className="flex items-center gap-2 text-sm font-medium text-green-600">
+              <MdPayment className="text-lg" />
               Secure Payment
             </span>
-            <span className="flex items-center gap-1 font-medium text-red-600">
-              <GiReturnArrow className="text-xl" />
+            <span className="flex items-center gap-2 text-sm font-medium text-red-600">
+              <GiReturnArrow className="text-lg" />
               Easy Returns
             </span>
-      </div>
+          </div>
+        </div>
       </div>
 
-      {/* Mobile Search Button */}
-      <div className="flex items-center justify-center mt-2 md:hidden">
+      {/* ================= MOBILE ================= */}
+      <div className="px-4 mt-3 md:hidden">
         <Button
           onClick={() => setIsOpen(true)}
-          className="flex items-center w-full px-3 py-2 space-x-2 text-gray-600 transition border rounded-lg hover:border-gray-400"
+          className="flex items-center w-full gap-2 border rounded-full h-11"
         >
-          <BsSearchHeart className="text-2xl" />
-          <span className="normal-case">Search for Products...</span>
+          <BsSearchHeart />
+          Search for products...
         </Button>
       </div>
 
-      {/* Mobile Search Modal */}
+      {/* ================= MOBILE MODAL ================= */}
       <div
-        className={`fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        className={`fixed inset-0 z-50 bg-black/40 ${
+          isOpen ? "block" : "hidden"
         }`}
       >
-        <div
-          className={`bg-white w-full max-w-md mt-4 rounded-xl shadow-lg p-4 transition-transform duration-300 ease-in-out transform ${
-            isOpen ? "translate-y-0" : "-translate-y-10"
-          }`}
-        >
-          <div className="flex items-center justify-between mb-2">
+        <div className="w-full max-w-md p-4 mx-auto mt-4 bg-white rounded-xl">
+          <div className="flex gap-2">
             <input
-              type="text"
-              placeholder="Search for Products..."
               autoFocus
-              className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch(query)}
+              placeholder="Search products..."
+              className="w-full px-4 border rounded-full h-11"
             />
-            <Button
-              onClick={() => setIsOpen(false)}
-              className="p-1 ml-2 text-gray-500 rounded-full hover:text-gray-900"
-            >
-              <IoClose className="text-xl" />
+            <Button onClick={() => setIsOpen(false)}>
+              <IoClose />
             </Button>
           </div>
 
-          {/* Recent Searches */}
-          <div className="flex flex-col gap-1 text-sm text-gray-500">
-            {recentSearches.map((item, idx) => (
-              <span
-                key={idx}
-                className="p-2 rounded cursor-pointer hover:bg-gray-100"
+          <div className="mt-4 border rounded-lg">
+            {(suggestions.length ? suggestions : recentSearches).map((item) => (
+              <div
+                key={item}
+                onClick={() => handleSearch(item)}
+                className="px-4 py-2 border-b cursor-pointer hover:bg-gray-100"
               >
                 {item}
-              </span>
+              </div>
             ))}
           </div>
         </div>
