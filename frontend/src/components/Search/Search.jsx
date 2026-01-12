@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { BsSearchHeart } from "react-icons/bs";
 import { IoClose } from "react-icons/io5";
@@ -10,6 +10,9 @@ import { fetchSearchSuggestions } from "../../services/searchService";
 
 const recentSearches = ["Laptop", "Headphones", "Shoes"];
 
+/* ✅ Known categories */
+const CATEGORIES = ["fashion", "electronics", "beauty"];
+
 const Search = () => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -17,6 +20,7 @@ const Search = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   /* 🔁 DEBOUNCE SEARCH */
   useEffect(() => {
@@ -38,10 +42,30 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, [query]);
 
+  /* ✅ FIXED SEARCH LOGIC */
   const handleSearch = (value) => {
     if (!value.trim()) return;
 
-    navigate(`/search?q=${encodeURIComponent(value)}`);
+    const keyword = value.trim().toLowerCase();
+    const pathname = location.pathname;
+
+    // 1️⃣ If keyword is a category → go to category
+    if (CATEGORIES.includes(keyword)) {
+      navigate(`/category/${keyword}`);
+    }
+
+    // 2️⃣ If already on category page → search inside category
+    else if (pathname.startsWith("/category/")) {
+      const params = new URLSearchParams(location.search);
+      params.set("q", value);
+      navigate(`${pathname}?${params.toString()}`);
+    }
+
+    // 3️⃣ Home or other pages → global search
+    else {
+      navigate(`/search?q=${encodeURIComponent(value)}`);
+    }
+
     setQuery("");
     setSuggestions([]);
     setShowDropdown(false);
@@ -53,8 +77,6 @@ const Search = () => {
       {/* ================= DESKTOP ================= */}
       <div className="w-full bg-gray-50">
         <div className="container flex items-center justify-between px-6 py-3 mx-auto">
-
-          {/* SEARCH INPUT */}
           <div className="relative hidden md:block w-[420px]">
             <input
               value={query}
@@ -65,7 +87,6 @@ const Search = () => {
               className="w-full pl-5 pr-12 border border-gray-300 rounded-full outline-none h-11 focus:ring-2 focus:ring-blue-500"
             />
 
-            {/* ❤️ CLICKABLE SEARCH ICON */}
             <button
               onClick={() => handleSearch(query)}
               className="absolute text-pink-600 -translate-y-1/2 right-4 top-1/2 hover:text-pink-700"
@@ -73,7 +94,6 @@ const Search = () => {
               <BsSearchHeart className="text-xl" />
             </button>
 
-            {/* AUTOCOMPLETE / RECENT */}
             {showDropdown && (
               <div className="absolute z-50 w-full mt-2 bg-white border shadow-lg rounded-xl">
                 {(suggestions.length ? suggestions : recentSearches).map(
@@ -91,19 +111,15 @@ const Search = () => {
             )}
           </div>
 
-          {/* RIGHT INFO */}
           <div className="items-center hidden gap-8 pr-4 md:flex">
             <span className="flex items-center gap-2 text-sm font-medium text-blue-600">
-              <TbTruckDelivery className="text-lg" />
-              Free Delivery
+              <TbTruckDelivery /> Free Delivery
             </span>
             <span className="flex items-center gap-2 text-sm font-medium text-green-600">
-              <MdPayment className="text-lg" />
-              Secure Payment
+              <MdPayment /> Secure Payment
             </span>
             <span className="flex items-center gap-2 text-sm font-medium text-red-600">
-              <GiReturnArrow className="text-lg" />
-              Easy Returns
+              <GiReturnArrow /> Easy Returns
             </span>
           </div>
         </div>

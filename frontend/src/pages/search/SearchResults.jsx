@@ -1,25 +1,41 @@
 import { useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+import {
+  fashionProducts,
+  electronicsProducts,
+  beautyProducts,
+} from "../../data/dummyData";
+import { getFilteredProducts } from "../../services/productService";
 
 const SearchResults = () => {
   const [params] = useSearchParams();
-  const query = params.get("q");
-  const [results, setResults] = useState([]);
 
-  useEffect(() => {
-    if (!query) return;
+  const allProducts = [
+    ...fashionProducts,
+    ...electronicsProducts,
+    ...beautyProducts,
+  ];
 
-    // 🔥 Backend-ready mock
-    setResults([
-      { id: 1, name: `Result for "${query}" 1`, price: 999 },
-      { id: 2, name: `Result for "${query}" 2`, price: 1499 },
-    ]);
-  }, [query]);
+  const filters = {
+    q: params.get("q"),
+    brands: params.get("brand")?.split(",") || [],
+    rating: params.get("rating"),
+    stock: params.get("stock"),
+    price: params.get("price")
+      ? params.get("price").split("-").map(Number)
+      : null,
+    sort: params.get("sort"),
+  };
+
+  const results = useMemo(
+    () => getFilteredProducts(allProducts, filters),
+    [params.toString()]
+  );
 
   return (
     <div className="container py-6">
       <h1 className="mb-4 text-xl font-semibold">
-        Search results for "{query}"
+        Search results for "{filters.q}"
       </h1>
 
       {results.length === 0 ? (
@@ -31,7 +47,8 @@ const SearchResults = () => {
               key={item.id}
               className="p-4 border rounded-lg hover:shadow"
             >
-              <p className="font-medium">{item.name}</p>
+              <img src={item.image} alt={item.title} />
+              <p className="font-medium">{item.title}</p>
               <p className="text-sm text-gray-600">₹{item.price}</p>
             </div>
           ))}
