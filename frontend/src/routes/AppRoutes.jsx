@@ -6,6 +6,7 @@ import CategoryPage from "../pages/CategoryPage";
 import ProductDetail from "../pages/ProductDetail";
 import Profile from "../pages/user/Profile";
 import Orders from "../pages/user/Orders";
+import Wishlist from "../pages/user/Wishlist";
 import SearchResults from "../pages/search/SearchResults";
 
 /* Auth Pages */
@@ -38,6 +39,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Route>
 
       {/* 📦 Main (Category + Product) */}

@@ -6,11 +6,12 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 
 import { TbShoppingCartHeart } from "react-icons/tb";
-import { FaRegHeart } from "react-icons/fa6";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 import CartDrawer from "../Checkout/CartDrawer";
 import UserMenu from "./UserMenu";
 import { useAuth } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -24,6 +25,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const HeaderActions = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const { user } = useAuth();
+  const { wishlistItems } = useWishlist();
 
   return (
     <>
@@ -46,9 +48,13 @@ const HeaderActions = () => {
         )}
 
         <Tooltip title="Wishlist">
-          <IconButton>
-            <StyledBadge badgeContent={4} color="secondary">
-              <FaRegHeart className="text-xl" />
+          <IconButton component={Link} to="/wishlist">
+            <StyledBadge badgeContent={wishlistItems.length} color="secondary">
+              {wishlistItems.length > 0 ? (
+                <FaHeart className="text-xl text-red-500" />
+              ) : (
+                <FaRegHeart className="text-xl" />
+              )}
             </StyledBadge>
           </IconButton>
         </Tooltip>

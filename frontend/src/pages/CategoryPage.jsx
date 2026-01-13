@@ -11,12 +11,13 @@ import {
 
 import { FaSortAmountDown, FaFilter } from "react-icons/fa";
 import { TbShoppingCartPlus } from "react-icons/tb";
-import { IoMdHeartEmpty } from "react-icons/io";
+import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io"; // ✅ UPDATED
 import { IoClose } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
 
 import ProductQuickViewDialog from "../components/Product/ProductQuickViewDialog";
 import Breadcrumbs from "../components/common/Breadcrumbs";
+import { useWishlist } from "../components/context/WishlistContext"; // ✅ ADDED
 
 const CategoryPage = () => {
   const { category } = useParams();
@@ -28,6 +29,8 @@ const CategoryPage = () => {
 
   const [openQuickView, setOpenQuickView] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const { toggleWishlist, isInWishlist } = useWishlist(); // ✅ ADDED
 
   const productsMap = {
     fashion: fashionProducts,
@@ -69,7 +72,6 @@ const CategoryPage = () => {
 
       {/* PRODUCTS */}
       <div className="w-full md:w-3/4">
-        {/* ✅ PRO BREADCRUMBS */}
         <Breadcrumbs />
 
         <h1 className="mb-2 text-lg font-semibold capitalize">
@@ -126,11 +128,19 @@ const CategoryPage = () => {
                         <TbShoppingCartPlus />
                       </button>
 
+                      {/* ✅ WISHLIST FIX ONLY */}
                       <button
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleWishlist(item);
+                        }}
                         className="p-2 text-white bg-red-500 rounded-full"
                       >
-                        <IoMdHeartEmpty />
+                        {isInWishlist(item.id) ? (
+                          <IoMdHeart />
+                        ) : (
+                          <IoMdHeartEmpty />
+                        )}
                       </button>
                     </div>
 

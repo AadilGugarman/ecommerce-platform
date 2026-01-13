@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaStar, FaHeart, FaShareAlt } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import { useWishlist } from "../components/context/WishlistContext"; // ✅ ADDED
 
 import {
   fashionProducts,
@@ -8,10 +9,14 @@ import {
   beautyProducts,
 } from "../data/dummyData";
 
+
+
 const ProductDetail = () => {
   const { category, index } = useParams();
-  
-   const [activeSize, setActiveSize] = useState("null");
+
+  const { toggleWishlist, isInWishlist } = useWishlist(); // ✅ ADDED
+
+  const [activeSize, setActiveSize] = useState("null");
   const [qty, setQty] = useState(1);
 
   const productsMap = {
@@ -27,8 +32,6 @@ const ProductDetail = () => {
     return <p className="p-10 text-center">Product not found</p>;
   }
 
- 
-
   // Discount calculation
   const discount = Math.round(
     ((product.originalPrice - product.price) / product.originalPrice) * 100
@@ -36,7 +39,6 @@ const ProductDetail = () => {
 
   return (
     <div className="w-full px-4 py-6 mx-auto max-w-7xl">
-      {/* ================= MAIN PRODUCT SECTION ================= */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10">
         {/* LEFT */}
         <div>
@@ -138,9 +140,21 @@ const ProductDetail = () => {
             <button className="flex-1 py-3 text-white bg-black rounded-lg">
               Add to Cart
             </button>
-            <button className="p-3 border rounded-lg">
-              <FaHeart />
+
+            {/* ✅ WISHLIST FIX ONLY */}
+            <button
+              onClick={() => toggleWishlist(product)}
+              className="p-3 border rounded-lg"
+            >
+              <FaHeart
+                className={
+                  isInWishlist(product.id)
+                    ? "text-red-500"
+                    : ""
+                }
+              />
             </button>
+
             <button className="p-3 border rounded-lg">
               <FaShareAlt />
             </button>

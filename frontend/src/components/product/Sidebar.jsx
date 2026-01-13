@@ -95,7 +95,7 @@ const Sidebar = () => {
   return (
     <aside className="w-full">
       {/* Filters */}
-      <div className="p-3 overflow-auto bg-gray-100 border h-[550px] space-y-4 sidebar-scrollbar">
+      <div className="p-3 overflow-y-auto overflow-x-hidden bg-gray-100 border h-[550px] space-y-4 sidebar-scrollbar">
 
         {/* Brand Filter */}
         {brands.length > 0 && (
